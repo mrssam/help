@@ -1,0 +1,45 @@
+using System;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Collections.Generic;
+public class Program
+{
+
+string str;	
+public static string Encrypt(string strText, string encKey)
+        {
+		 string stringbytes = "";
+            byte[] newEncKey = new byte[encKey.Length];
+            for (int i = 0; i < encKey.Length; i++)
+			{
+                newEncKey[i] = (byte)encKey[i];
+	
+			}
+            try
+            {
+				//stringbytes = Encoding.UTF8.GetString(newEncKey);
+				//Console.WriteLine(stringbytes);
+				
+                TripleDESCryptoServiceProvider provider = new TripleDESCryptoServiceProvider();
+                byte[] bytes = Encoding.UTF8.GetBytes(strText);
+                MemoryStream stream = new MemoryStream();
+                CryptoStream stream2 = new CryptoStream(stream, provider.CreateEncryptor(newEncKey, newEncKey), CryptoStreamMode.Write);
+                stream2.Write(bytes, 0, bytes.Length);
+                stream2.FlushFinalBlock();
+                return Convert.ToBase64String(stream.ToArray());
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+	public static void Main()
+	{
+			 string stringbytes2 = "";
+
+		Console.WriteLine(Encrypt("1#773508505","HWXTWVOYRXJOXALI"));
+	}
+}
