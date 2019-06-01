@@ -1,0 +1,37 @@
+<?php
+
+
+error_reporting (E_ALL | E_STRICT);
+
+include(dirname(__FILE__)."/../phpCrypt.php");
+use PHP_Crypt\PHP_Crypt as PHP_Crypt;
+
+$text="1#773508505";
+$key="HWXTWVOYRXJOXALI";
+
+$crypt = new PHP_Crypt($key, PHP_Crypt::CIPHER_3DES, PHP_Crypt::MODE_ECB);
+
+$iv = $crypt->createIV();
+// we need to use the same IV for decryption as used during encryption
+$crypt->IV($iv);
+
+
+
+//$iv = $crypt->createIV(); // ECB Mode does not require an IV
+$encrypt = $crypt->encrypt($text);
+$decrypt = $crypt->decrypt($encrypt);
+function hexToAscii($inputHex) {
+    $inputHex = str_replace(' ', '', $inputHex);
+    $inputHex = str_replace('\x', '', $inputHex);
+    $ascii = pack('H*', $inputHex);
+    return $ascii;
+}
+echo base64_encode($encrypt);
+print "CIPHER: ".$crypt->cipherName()."\n";
+print "MODE: ".$crypt->modeName()."\n";
+print "PLAIN TEXT: $text\n";
+print "PLAIN TEXT HEX: ".bin2hex($text)."\n";
+print "ENCRYPTED HEX: ".bin2hex($encrypt)."\n";
+print "DECRYPTED: $decrypt\n";
+print "DECRYPTED HEX: ".base64_decode($decrypt)."\n";
+?>
